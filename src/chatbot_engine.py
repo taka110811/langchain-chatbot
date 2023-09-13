@@ -9,20 +9,24 @@ from langchain.indexes import VectorstoreIndexCreator
 from langchain.indexes.vectorstore import VectorStoreIndexWrapper
 from langchain.memory import ChatMessageHistory, ConversationBufferMemory
 from langchain.tools import BaseTool
+from langchain.document_loaders import PyPDFLoader
+
 
 langchain.verbose = True
 
 # ソースコードをベクトル化してベクターストアに格納している
 def create_index() -> VectorStoreIndexWrapper:
     loader = DirectoryLoader("./src/", glob="**/*.py")
+    loader = PyPDFLoader("Attention_Is_All_You_Need.pdf")
+    pages = loader.load_and_split()
     return VectorstoreIndexCreator().from_loaders([loader])
 
 
 def create_tools(index: VectorStoreIndexWrapper) -> List[BaseTool]:
     vectorstore_info = VectorStoreInfo(
         vectorstore=index.vectorstore,
-        name="udemy-langchain source code",
-        description="Source code of application named udemy-langchain",
+        name="langchain-pdf",
+        description="pdf-data of Attention_Is_All_You_Need.pdf",
     )
     toolkit = VectorStoreToolkit(vectorstore_info=vectorstore_info)
     return toolkit.get_tools()

@@ -17,6 +17,7 @@ pytesseract = "0.3.10"
 chromadb = "0.3.23"
 tiktoken = "0.4.0"
 pandas = "2.0.3"
+pypdf = "3.16.0"
 
 [tool.poetry.dev-dependencies]
 
