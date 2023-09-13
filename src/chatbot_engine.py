@@ -16,17 +16,21 @@ langchain.verbose = True
 
 # ソースコードをベクトル化してベクターストアに格納している
 def create_index() -> VectorStoreIndexWrapper:
-    loader = DirectoryLoader("./src/", glob="**/*.py")
-    loader = PyPDFLoader("Attention_Is_All_You_Need.pdf")
-    pages = loader.load_and_split()
-    return VectorstoreIndexCreator().from_loaders([loader])
+    loader1 = DirectoryLoader("./src/", glob="**/*.py")
+    loader2 = PyPDFLoader("Attention_Is_All_You_Need.pdf")
+
+    # ローダーをリストに格納してからfrom_loadersメソッドに渡します
+    loaders = [loader1, loader2]
+
+    # ベクトルストアのインデックスを作成
+    return VectorstoreIndexCreator().from_loaders(loaders)
 
 
 def create_tools(index: VectorStoreIndexWrapper) -> List[BaseTool]:
     vectorstore_info = VectorStoreInfo(
         vectorstore=index.vectorstore,
-        name="langchain-pdf",
-        description="pdf-data of Attention_Is_All_You_Need.pdf",
+        name="langchain-vector-store",
+        description="",
     )
     toolkit = VectorStoreToolkit(vectorstore_info=vectorstore_info)
     return toolkit.get_tools()
