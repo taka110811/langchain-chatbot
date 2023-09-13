@@ -10,6 +10,7 @@ from langchain.indexes.vectorstore import VectorStoreIndexWrapper
 from langchain.memory import ChatMessageHistory, ConversationBufferMemory
 from langchain.tools import BaseTool
 from langchain.document_loaders import PyPDFLoader
+from langchain.document_loaders.csv_loader import CSVLoader
 
 
 langchain.verbose = True
@@ -18,9 +19,10 @@ langchain.verbose = True
 def create_index() -> VectorStoreIndexWrapper:
     loader1 = DirectoryLoader("./src/", glob="**/*.py")
     loader2 = PyPDFLoader("Attention_Is_All_You_Need.pdf")
+    loader3 = CSVLoader(file_path='demo_data.csv')
 
     # ローダーをリストに格納してからfrom_loadersメソッドに渡します
-    loaders = [loader1, loader2]
+    loaders = [loader1, loader2, loader3]
 
     # ベクトルストアのインデックスを作成
     return VectorstoreIndexCreator().from_loaders(loaders)
@@ -30,7 +32,7 @@ def create_tools(index: VectorStoreIndexWrapper) -> List[BaseTool]:
     vectorstore_info = VectorStoreInfo(
         vectorstore=index.vectorstore,
         name="langchain-vector-store",
-        description="",
+        description="python source code, a thesis, a csv file",
     )
     toolkit = VectorStoreToolkit(vectorstore_info=vectorstore_info)
     return toolkit.get_tools()
